@@ -7,25 +7,41 @@ require 'inc_0700/config_inc.php';
 //header
 get_header();
 
+
 //set id in order to call feed
-if(isset($_GET['id']) && (int)$_GET['id'] > 0){//get data
-$id = $_GET['id'];
-}
-else
-{//bad data, redirected
+if(isset($_GET['id']) && (int)$_GET['id'] > 0)
+	{//get data
+	$id = $_GET['id'];
+
+	}else
+	{//bad data, redirected
     header('Location:index.php');
-}
+	}
+
+
+if(!isset($_SESSION['News']))
+{//create session
+
 
 //calling constructor for News class to obtain the feed
-$myNews = new News($id);
+$myNews = new NewsView($id);
+
+$time = getdate();
+echo 'session time: ' . date("h:i:sa");
+
+//echo date_diff($time,getdate());
+
+}
 
 
 //footer
 get_footer(); 
 
+
+
 //create class to get News Feed
 
-class News
+class NewsView
 {
 	public $CategoryID;
 	public $FeedName;
@@ -52,13 +68,31 @@ class News
 	
 				$this->FeedName = $row['FeedName'];
 				$this->FeedDescription = $row['FeedDescription'];
+				$this->FeedURL = $row['FeedURL'];
+				$this->FeedID = $row['FeedID'];
+				
+				/*$request = ' " ' . $this->FeedURL . ' " ';
+  				$response = file_get_contents($request);
+  				$xml = simplexml_load_string($response); */
 				
 				//echo data
 				echo '<p>';
-				echo '<b>' . $this->FeedName . '</b><br />';
+				//echo '<b><a href=' . $this->FeedURL . '>' . $this->FeedName . '</a></b><br/>';
+				echo '<b><a href="news_list.php?id=' . $this->FeedID . '">' . $this->FeedName . '</a></b><br />';
 	   			echo $this->FeedDescription;
-	   			//echo '<a href="' . $row['FeedURL'] . '">';
 	   			echo '<p>';
+	   			
+	   			//feed
+	   			
+	   			/*$request = $this->FeedURL;
+  				$response = file_get_contents($request);
+  				$xml = simplexml_load_string($response);
+  				print '<h1>' . $xml->channel->title . '</h1>';
+  					foreach($xml->channel->item as $story)
+  						{
+    					echo '<a href="' . $story->link . '">' . $story->title . '</a><br />'; 
+    					echo '<p>' . $story->description . '</p><br /><br />';
+ 						 } */
 	   			
 				} //end while statement
 			
