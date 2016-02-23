@@ -49,7 +49,7 @@ class FeedView
 
 		//SQL Statement
 
-		$sql = "SELECT * FROM p3_feeds WHERE CategoryID = $id";
+		$sql = "SELECT * FROM p3_feeds WHERE FeedID = $id";
 
 		//IDB::conn() creates a shareable database connection viea a singleton class
 		$result = mysqli_query(IDB::conn(), $sql) or die(trigger_error(mysqli_error(IDB::conn()), E_USER_ERROR));
@@ -64,10 +64,6 @@ class FeedView
 				$this->FeedURL = $row['FeedURL'];
 				$this->FeedID = $row['FeedID'];
 				
-				//$request = ' " ' . $this->FeedURL . ' " ';
-				$request = "https://news.google.com/news?cf=all&hl=en&pz=1&ned=us&topic=tc&output=rss";
-  				$response = file_get_contents($request);
-  				$xml = simplexml_load_string($response); 
 				
 				//echo data
 				echo '<p>';
@@ -76,15 +72,15 @@ class FeedView
 	   			
 	   			//feed
 	   			
-	   			$request = $this->FeedURL;
-  				$response = file_get_contents($request);
-  				$xml = simplexml_load_string($response);
-  				print '<h1>' . $xml->channel->title . '</h1>';
-  					foreach($xml->channel->item as $story)
-  						{
-    					echo '<a href="' . $story->link . '">' . $story->title . '</a><br />'; 
-    					echo '<p>' . $story->description . '</p><br /><br />';
- 						 } 
+                $request = $this->FeedURL;
+                $response = file_get_contents($request);
+                $xml = simplexml_load_string($response);
+                print '<h1>' . $xml->channel->title . '</h1>';
+                foreach($xml->channel->item as $story)
+                    {
+                    echo '<a href="' . $story->link . '">' . $story->title . '</a><br />'; 
+                    echo '<p>' . $story->description . '</p><br /><br />';
+                    } //end feed
 	   			
 				} //end while statement
 			
